@@ -1,10 +1,8 @@
 //Appel de mongose
 const mongoose = require('mongoose');
-
+//Chemin nodeJs
 let path = require('path');
-
-//Appel model livres
-
+//Appel model livres Model/livre.model.js
 const Livres = mongoose.model('livres');
 
 //Creationde la routes
@@ -20,6 +18,32 @@ exports.getLivres = async (request, response) => {
     response.json(livres)
 }
 
+//Details de chaque
+exports.getSingleLivre = async (request, response) => {
+    //Requet de recup de l'id
+    let livdreId = request.params.id;
+
+    //MongoDB propose la fonction findById()
+    await Livres.findById({
+        _id: livdreId
+    },
+        //Si on detecte une erreur
+        (err, data) =>{
+            if(err){
+                response.status(500).json({
+                    message: 'Une erreur est survenue lors de la recherche du livre'
+                });
+            }else{
+                response.status(200).json({
+                    message: "Votre livre a été touvé",
+                    data
+                })
+            }
+        }
+        )
+}
+
+
 //Ajouter un livres
 exports.createLivre = async (request, response) => {
     //MongoDb et mongoose porose la method save()
@@ -33,6 +57,54 @@ exports.createLivre = async (request, response) => {
                 message: "Votre livre a été creer",
                 data
             })
+        }
+    })
+}
+
+//Supprimer un livre
+
+exports.deleteLivre = async (request, response) => {
+    //Requet de recup de l'id
+    let livdreId = request.params.id;
+    //Mongoose  propose delete One
+    await Livres.deleteOne({
+        _id: livdreId
+    },(err, data) => {
+        if(err){
+            response.status(500).json({
+                message: 'Une erreur est survenue lors de la supression du livre'
+            });
+        }else{
+            response.status(200).json({
+                message: "Livre supprimer",
+                data
+            })
+        }
+    })
+}
+
+//Mise a jour d'un livre
+
+exports.updateLivre =  async (request, response) => {
+    //Recuper id
+    let livreID = request.params.id;
+
+    await Livres.findByIdAndUpdate({
+        _id: livreID
+    },{
+        $set: request.body
+    },(err, data) => {
+        {
+            if(err){
+                response.status(500).json({
+                    message: 'Une erreur est survenue lors de l\'edition du livre du livre'
+                });
+            }else{
+                response.status(200).json({
+                    message: "Livre a bien été mis a jour !",
+                    data
+                })
+            }
         }
     })
 }

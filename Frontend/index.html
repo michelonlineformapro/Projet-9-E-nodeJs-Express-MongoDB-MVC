@@ -2,9 +2,47 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <title>ExpressJs MongoDB Livres</title>
 </head>
 <body>
-<h1>SALUT C EXPRESSJS</h1>
+<div class="container">
+    <h4 style="padding: 10px" class="white-text lighten-2 center red lighten-2">Liste de nos livres du backend</h4>
+    <div class="row">
+        <!--DIV VIDE A REMPLIR AVEC LES ELEMENTS DU BACK-->
+        <div id="livres_row"></div>
+    </div>
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<!--Appel de Axios HTTP-->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+    const livres = document.querySelector('#livres_row')
+    axios.get('http://localhost:3000/livres')
+    .then(livres => livres.data.forEach(afficherLivres))
+
+
+    function afficherLivres(livre){
+        const livreItem = document.createElement('div')
+        livreItem.id = "livres" + livre._id;
+        livreItem.className = 'col s4';
+
+        livreItem.innerHTML = `
+            <div class="card col s12">
+                <div class="card-image">
+                    <img src="${livre.imageLivre}" alt="${livre.nomLivre}" title="${livre.nomLivre}">
+                </div>
+            </div>
+        `;
+        livres.appendChild(livreItem);
+    }
+</script>
+
 </body>
 </html>
