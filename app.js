@@ -2,8 +2,10 @@
 const express = require('express');
 //Instance du framework dans une constante
 const app = express();
+
+const axios = require('axios');
 //Appel des dossier et fichier contenu dans le dossier Public du Backend
-app.use(express.static(__dirname + '/Public'));
+app.use(express.static(__dirname + '/Frontend'));
 //reconaot les requète Objets comme des json Object
 app.use(express.json());
 

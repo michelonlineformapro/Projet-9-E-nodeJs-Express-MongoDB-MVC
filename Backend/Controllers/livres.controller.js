@@ -53,10 +53,8 @@ exports.createLivre = async (request, response) => {
                 message: 'Une erreur est survenue lors de la creation du livre'
             });
         }else{
-            response.status(200).json({
-                message: "Votre livre a été creer",
-                data
-            })
+            console.log("livre ajouté :" + response.status(201) )
+            response.redirect('/')
         }
     })
 }

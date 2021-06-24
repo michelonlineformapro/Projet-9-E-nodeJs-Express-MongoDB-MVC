@@ -12,8 +12,50 @@
 <div class="container">
     <h4 style="padding: 10px" class="white-text lighten-2 center red lighten-2">Liste de nos livres du backend</h4>
     <div class="row">
+        <ul class="collapsible">
+            <li>
+                <div class="collapsible-header"><i class="material-icons orange-text">add_circle</i><b class="blue-text lighthen">AJOUTER UN LIVRE</b></div>
+                <div class="collapsible-body">
+                    <span>
+                        <!--FORMULAIRE AJOUT-->
+                        <form action="ajouter-livre" id="ajouterForm" method="post">
+                            <div class="form-group">
+                                <label>Nom du Livre</label>
+                                <input class="form-control" type="text" name="nomLivre">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Description du Livre</label>
+                                <input class="form-control" type="text" name="descriptionLivre">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Prix du Livre</label>
+                                <input class="form-control" type="text" name="prixLivre">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Image du Livre</label>
+                                <input class="form-control" type="text" name="imageLivre">
+                            </div>
+
+                            <div class="form-group">
+                                <button class="col s6 waves-effect waves-light btn orange lighten-2" type="submit">Ajouter</button>
+                                <button type="reset" class="col s6 waves-effect waves-light btn purple lighten-2">vider les champs</button>
+                            </div>
+                            <br />
+                            <br />
+                        </form>
+                    </span>
+                </div>
+            </li>
+        </ul>
+
         <!--DIV VIDE A REMPLIR AVEC LES ELEMENTS DU BACK-->
         <div id="livres_row"></div>
+        <!--DIV POUR LES DETAILS-->
+
+        <!--DIV POUR UPDATE-->
     </div>
 </div>
 
@@ -21,6 +63,14 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <!--Appel de Axios HTTP-->
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let elems = document.querySelectorAll('.collapsible');
+        let instances = M.Collapsible.init(elems, 250);
+    });
+</script>
+
 
 <script>
     const livres = document.querySelector('#livres_row')
@@ -33,13 +83,22 @@
         livreItem.id = "livres" + livre._id;
         livreItem.className = 'col s4';
 
-        livreItem.innerHTML = `
-            <div class="card col s12">
+        livreItem.innerHTML =`
+            <div class="card col s12 hoverable">
                 <div class="card-image">
-                    <img src="${livre.imageLivre}" alt="${livre.nomLivre}" title="${livre.nomLivre}">
+                    <img src="${livre.imageLivre}" alt="${livre.nomLivre}" title="${livre.nomLivre}" width="15%" style="padding-top: 10px">
                 </div>
-            </div>
-        `;
+                <div class="card-content">
+                    <h3 class="blue-text lighten-1">${livre.nomLivre}</h3>
+                    <p>Référence : ${livre._id}</p>
+                    <p>Description : </p>
+                    <p>${livre.descriptionLivre}</p>
+                    <p class="red-text lighten-3">Prix : ${livre.prixLivre} €</p>
+                </div>
+                <div class="card-action">
+
+                </div>
+            </div>`
         livres.appendChild(livreItem);
     }
 </script>
