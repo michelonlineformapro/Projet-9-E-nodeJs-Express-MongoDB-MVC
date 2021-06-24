@@ -77,6 +77,25 @@
     axios.get('http://localhost:3000/livres')
     .then(livres => livres.data.forEach(afficherLivres))
 
+    //Creation des boutons
+
+    function addBtnDelete(livre){
+        //Une contante pour creer le bouton
+        const btnDelete = document.createElement('button');
+        //Id unique a chaque bouton
+        btnDelete.setAttribute('id', `btnDelete${livre._id}`);
+        //Texte du bouton
+        btnDelete.innerHTML = 'Supprimer';
+        //Classe css pour mise en page
+        btnDelete.className = 'col s4 btn orange';
+        //Recup de id de chaque livre
+        let livreDIV = document.getElementById(`livres${livre._id}`)
+        livreDIV.appendChild(btnDelete);
+
+        //Au click sur le bouton on declenche un event (une fonction)
+        btnDelete.addEventListener('click', () => deleteLivre(livre))
+    }
+
 
     function afficherLivres(livre){
         const livreItem = document.createElement('div')
@@ -100,7 +119,18 @@
                 </div>
             </div>`
         livres.appendChild(livreItem);
+
+        addBtnDelete(livre);
     }
+
+    function deleteLivre(livre){
+        const livreID = document.querySelector(`#livres${livre._id}`)
+
+        axios.delete(`http://localhost:3000/supprimer/${livre._id}`)
+        .then(() => livreID.remove())
+    }
+
+
 </script>
 
 </body>
