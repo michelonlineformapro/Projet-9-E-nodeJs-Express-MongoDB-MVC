@@ -84,28 +84,30 @@ exports.deleteLivre = async (request, response) => {
 //Mise a jour d'un livre
 
 exports.updateLivre =  async (request, response) => {
-    //Recuper id
-    let livreID = request.params.id;
+    //Recuperer id
+    let livresData = new Livres({
+        _id: request.params.id,
+        nomLivre: request.body.nomLivre,
+        descriptionLivre: request.body.descriptionLivre,
+        prixLivre: request.body.prixLivre,
+        imageLivre: request.body.imageLivre
+    });
+    //Mongoose propose le methode findByIdAndUpdate(3 paramètres id + data + callback)
+    await Livres.updateOne({_id: request.params.id}, livresData)
+        .then(() => {
+            response.status(201).json({
+                message: 'Livre est a jour! c ok good',
+            })
+            console.log(response.data)
+        })
 
-    await Livres.findByIdAndUpdate({
-        _id: livreID
-    },{
-        $set: request.body
-    },(err, data) => {
-        {
-            if(err){
-                response.status(500).json({
-                    message: 'Une erreur est survenue lors de l\'edition du livre du livre'
+        .catch((error) => {
+                response.status(400).json({
+                    error: error
                 });
-            }else{
-                response.status(200).json({
-                    message: "Livre a bien été mis a jour !",
-                    data
-                })
             }
-        }
-    })
-}
+        );
+};
 
 
 

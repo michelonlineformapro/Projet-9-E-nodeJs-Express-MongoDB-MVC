@@ -54,8 +54,9 @@
         <!--DIV VIDE A REMPLIR AVEC LES ELEMENTS DU BACK-->
         <div id="livres_row"></div>
         <!--DIV POUR LES DETAILS-->
-
+        <div id="detailsLivre"></div>
         <!--DIV POUR UPDATE-->
+        <div id="updateForm"></div>
     </div>
 </div>
 
@@ -87,13 +88,47 @@
         //Texte du bouton
         btnDelete.innerHTML = 'Supprimer';
         //Classe css pour mise en page
-        btnDelete.className = 'col s4 btn orange';
+        btnDelete.className = 'col s12 center btn orange';
         //Recup de id de chaque livre
         let livreDIV = document.getElementById(`livres${livre._id}`)
         livreDIV.appendChild(btnDelete);
 
         //Au click sur le bouton on declenche un event (une fonction)
         btnDelete.addEventListener('click', () => deleteLivre(livre))
+    }
+
+    function addBtnDetails(livre){
+        //Une contante pour creer le bouton
+        const btnDetails = document.createElement('button');
+        //Id unique a chaque bouton
+        btnDetails.setAttribute('id', `btnDetails${livre._id}`);
+        //Texte du bouton
+        btnDetails.innerHTML = 'Détails';
+        //Classe css pour mise en page
+        btnDetails.className = 'col s12 btn purple';
+        //Recup de id de chaque livre
+        let livreDIV = document.getElementById(`livres${livre._id}`)
+        livreDIV.appendChild(btnDetails);
+
+        //Au click sur le bouton on declenche un event (une fonction)
+        btnDetails.addEventListener('click', () => detailsLivre(livre))
+    }
+
+    function addBtnUpdate(livre){
+        //Une contante pour creer le bouton
+        const btnUpdate = document.createElement('button');
+        //Id unique a chaque bouton
+        btnUpdate.setAttribute('id', `btnUpdate${livre._id}`);
+        //Texte du bouton
+        btnUpdate.innerHTML = 'Mise a jour';
+        //Classe css pour mise en page
+        btnUpdate.className = 'col s12 btn green';
+        //Recup de id de chaque livre
+        let livreDIV = document.getElementById(`livres${livre._id}`)
+        livreDIV.appendChild(btnUpdate);
+
+        //Au click sur le bouton on declenche un event (une fonction)
+        btnUpdate.addEventListener('click', () => afficherUpdateForm(livre))
     }
 
 
@@ -121,6 +156,8 @@
         livres.appendChild(livreItem);
 
         addBtnDelete(livre);
+        addBtnDetails(livre);
+        addBtnUpdate(livre);
     }
 
     function deleteLivre(livre){
@@ -128,6 +165,100 @@
 
         axios.delete(`http://localhost:3000/supprimer/${livre._id}`)
         .then(() => livreID.remove())
+    }
+
+    function detailsLivre(livre){
+        axios.get(`http://localhost:3000/livres/${livre._id}`)
+        .then(livre => afficherDetailsLivres(livre.data))
+    }
+
+    function afficherDetailsLivres(livre){
+        const livreRow = document.querySelector('#livres_row');
+        const detailsLivre = document.querySelector('#detailsLivre');
+
+        livreRow.style.display = 'none';
+        detailsLivre.innerHTML =
+            `
+            <div class="card col s6">
+              <div class="card-image">
+                <img src="${livre.data.imageLivre}" alt="${livre.data.nomLivre}" title="${livre.data.nomLivre}" width="25%" />
+              </div>
+              <div class="card-content">
+                <h3 class="blue-text lighten-1">${livre.data.nomLivre}</h3>
+                <p>Référence : ${livre.data._id}</p>
+                <p>Description : </p>
+                <p>${livre.data.descriptionLivre}</p>
+                <p class="red-text lighten-3">Prix : ${livre.data.prixLivre} €</p>
+              </div>
+              <div class="card-action">
+                    <a href="/" class="btn red lightn-2">Retour</a>
+              </div>
+            </div>`
+    }
+
+    function afficherUpdateForm(livre){
+        const livreRow = document.querySelector('#livres_row');
+        const updateForm = document.querySelector('#updateForm');
+
+        livreRow.style.display = 'none';
+
+        const editForm = document.createElement('form')
+        editForm.id = 'edit-form';
+
+        editForm.innerHTML =
+            `
+          <h3 class="purple-text center lighten-1 card-panel">EDITER LE LIVRE</h3>
+          <div class="form-group">
+            <label>Nom du Livre</label>
+            <input class="form-control" value="${livre.nomLivre}" type="text" name="nomLivre">
+          </div>
+
+          <div class="form-group">
+            <label>Description du Livre</label>
+            <input class="form-control" value="${livre.descriptionLivre}" type="text" name="descriptionLivre">
+          </div>
+
+          <div class="form-group">
+            <label>Prix du Livre</label>
+            <input class="form-control" type="text" value="${livre.prixLivre}" name="prixLivre">
+          </div>
+
+          <div class="form-group">
+            <label>Image du Livre</label>
+            <input class="form-control" type="text" value="${livre.imageLivre}" name="imageLivre">
+          </div>
+
+          <div class="form-group">
+            <button class="col s6 waves-effect waves-light btn green lighten-2" type="submit">Mettre a jour</button>
+            <button type="reset" class="col s6 waves-effect waves-light btn red lighten-2">vider les champs</button>
+          </div>
+      `
+        updateForm.appendChild(editForm);
+        editForm.addEventListener('submit', (event) => addNewDataLivre(event, livre));
+    }
+
+    function addNewDataLivre(event, livre){
+        event.preventDefault();
+
+        livreDatas = {
+            nomLivre: `${event.currentTarget.nomLivre.value}`,
+            descriptionLivre: `${event.target.descriptionLivre.value}`,
+            prixLivre: `${event.target.prixLivre.value}`,
+            imageLivre: `${event.target.imageLivre.value}`,
+        }
+        fetch(`http://localhost:3000/edit-livres/${livre._id}`,{
+            method: 'PUT',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(livreDatas)
+        })
+        .then(response => response.json())
+        .then(() => {
+            console.log('livre est mis a jour')
+            window.location.reload();
+            afficherLivres(livre)
+        })
     }
 
 

@@ -5,7 +5,8 @@ const mongoose = require('mongoose');
 //Connexion a mongoose + url locale de mongodb
 mongoose.connect("mongodb://localhost:27017/ecommerce",{
     useUnifiedTopology: true,
-    useNewUrlParser: true
+    useNewUrlParser: true,
+    useFindAndModify: false
 });
 
 //Creation d'une promesse = ES6

@@ -6,7 +6,8 @@ const app = express();
 const axios = require('axios');
 //Appel des dossier et fichier contenu dans le dossier Public du Backend
 app.use(express.static(__dirname + '/Frontend'));
-//reconaot les requète Objets comme des json Object
+
+//reconait les requète Objets comme des json Object
 app.use(express.json());
 
 //Reconnais les requètes Objet comme des strings et des arrays

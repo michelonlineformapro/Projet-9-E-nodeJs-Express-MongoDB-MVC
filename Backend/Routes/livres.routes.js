@@ -26,9 +26,8 @@ router.post('/ajouter-livre', livreController.createLivre)
 //Supprimer un livre
 router.delete('/supprimer/:id', livreController.deleteLivre)
 
-
 //Mettre a jour un livre
-router.put('livres/:id/update', livreController.updateLivre)
+router.put('/edit-livres/:id/', livreController.updateLivre);
 
 //Export du module router
 module.exports = router;
